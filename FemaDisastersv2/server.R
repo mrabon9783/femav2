@@ -75,7 +75,7 @@ relateFematoSpatial<-function(rawfemadata,historyTerm){
 }
 
 getfemadata<- function(){
-  dsfile<-file.path(getwd(),paste("fema",as.Date(Sys.Date(), format("%Y%m%d")),".csv", sep = ""))
+  dsfile<-paste("fema",as.Date(Sys.Date(), format("%Y%m%d")),".csv", sep = "")
   if(!file.exists(dsfile)){
     a<-read.csv("https://www.fema.gov/api/open/v1/DisasterDeclarationsSummaries.csv")
     f<-sqldf("select max(declarationDate) as declarationDate, state, placeCode  from a where a.disasterNumber between 4000 and 4999 group by state, placeCode")
