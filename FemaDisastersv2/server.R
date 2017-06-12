@@ -75,14 +75,18 @@ relateFematoSpatial<-function(rawfemadata,historyTerm){
 }
 
 getfemadata<- function(){
-  dsfile<-paste("fema",as.Date(Sys.Date(), format("%Y%m%d")),".csv", sep = "")
-  if(!file.exists(dsfile)){
-    a<-read.csv("https://www.fema.gov/api/open/v1/DisasterDeclarationsSummaries.csv")
-    f<-sqldf("select max(declarationDate) as declarationDate, state, placeCode  from a where a.disasterNumber between 4000 and 4999 group by state, placeCode")
-    a<-sqldf("select a.declarationDate, a.state, a.placeCode, a.disasterNumber, a.title  from a inner join f on  f.declarationDate = a.declarationDate and f.state = a.state and f.placeCode = a.placeCode ")
-    write.csv(a,dsfile, row.names = FALSE)
-  }
-  a<-read.csv(dsfile)
+  #dsfile<-paste("fema",as.Date(Sys.Date(), format("%Y%m%d")),".csv", sep = "")
+  #if(!file.exists(dsfile)){
+  #  a<-read.csv("https://www.fema.gov/api/open/v1/DisasterDeclarationsSummaries.csv")
+  #  f<-sqldf("select max(declarationDate) as declarationDate, state, placeCode  from a where a.disasterNumber between 4000 and 4999 group by state, placeCode")
+  #  a<-sqldf("select a.declarationDate, a.state, a.placeCode, a.disasterNumber, a.title  from a inner join f on  f.declarationDate = a.declarationDate and f.state = a.state and f.placeCode = a.placeCode ")
+  #  write.csv(a,dsfile, row.names = FALSE)
+  #}
+  a<-read.csv("https://www.fema.gov/api/open/v1/DisasterDeclarationsSummaries.csv")
+  f<-sqldf("select max(declarationDate) as declarationDate, state, placeCode  from a where a.disasterNumber between 4000 and 4999 group by state, placeCode")
+  a<-sqldf("select a.declarationDate, a.state, a.placeCode, a.disasterNumber, a.title  from a inner join f on  f.declarationDate = a.declarationDate and f.state = a.state and f.placeCode = a.placeCode ")
+    
+  #a<-read.csv(dsfile)
   a$declarationDate <- apply(a[1],1,function(x){unlist(strsplit(x,"T",fixed = TRUE))[1]})
   a$declarationDate <- as.character(a$declarationDate)
   a$declarationDate <- as.Date(a$declarationDate,format = "%Y-%m-%d")
